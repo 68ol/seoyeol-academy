@@ -414,7 +414,7 @@ simple background, white background, flat lighting, even lighting, plain wall, n
 ```
 1boy, solo, male focus, femboy, androgynous, petite, short, slender, narrow shoulders, pale skin, smooth skin,
 
-short black hair, rounded bob cut, 1.1::single silver streak in bangs ::, silver strand over one eye, eyes visible through hair, silver underlayer, short silver strands at nape, -1::long hair::, -1::silver sidelocks::,
+short black hair, layered short hair, choppy ends, -1::bob cut::, 1.1::single silver streak in bangs ::, silver strand over one eye, eyes visible through hair, silver underlayer, short silver strands at nape, -1::long hair::, -1::silver sidelocks::,
 
 light gray eyes, round eyes, slightly droopy eyes, large eyes, long eyelashes, small pupils, thin eyebrows, pretty face, mole under eye,
 
@@ -474,7 +474,7 @@ simple background, white background, flat lighting, even lighting, plain wall, n
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -511,6 +511,8 @@ simple background, white background, flat lighting, even lighting, plain wall, n
 
 ## 사진첩 9장 (img/photos/p1.png ~ p9.png, 1024×1024)
 
+> 2026-11-21 최신판: Peropix 슬롯 세트 `서열학원_미니홈피_사진첩_10`에 장면마다 한 칸짜리 프롬프트로 다시 썼다(인물별 위치 + 머리·눈·대표 옷을 1.2 가중치로 묶어 섞임 방지, 장면별 카메라 연출 추가). 아래 블록은 캐릭터 프롬프트로 나눠 쓰는 옛 버전이다.
+
 전역 프롬프트에 장면 태그를 쓰고, 인물은 캐릭터 프롬프트로 나눠 넣는다. 아래 `[전역]` 아래에는 공통 스냅 질감 태그가 이미 붙어 있다. 사진첩은 2006년 폴더폰이나 디지털카메라로 찍은 스냅 느낌이 목표다.
 
 ### P1 · 우리 방이에요.. 정리는 해원이 담당;;
@@ -524,7 +526,7 @@ simple background, white background, flat lighting, even lighting, plain wall, n
 ```
 1boy, solo, male focus, femboy, androgynous, petite, short, slender, narrow shoulders, pale skin, smooth skin,
 
-short black hair, rounded bob cut, 1.1::single silver streak in bangs ::, silver strand over one eye, eyes visible through hair, silver underlayer, short silver strands at nape, -1::long hair::, -1::silver sidelocks::,
+short black hair, layered short hair, choppy ends, -1::bob cut::, 1.1::single silver streak in bangs ::, silver strand over one eye, eyes visible through hair, silver underlayer, short silver strands at nape, -1::long hair::, -1::silver sidelocks::,
 
 light gray eyes, round eyes, slightly droopy eyes, large eyes, long eyelashes, small pupils, thin eyebrows, pretty face, mole under eye,
 
@@ -539,7 +541,7 @@ standing, folding clothes, finger pointing, scolding, annoyed, looking at viewer
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -561,7 +563,7 @@ standing, nervous smile, sweat drop, awkward, hands together,
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -643,7 +645,7 @@ talking excitedly, open mouth, gesturing with both hands, leaning forward,
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -695,7 +697,7 @@ struggling, laughing, being held in headlock,
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -732,7 +734,7 @@ standing, index finger raised, lecturing, gentle worried expression,
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -754,7 +756,7 @@ close-up, hand focus, desk, stacked meeting documents, pens, notebooks, indoors,
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -791,7 +793,7 @@ standing, pointing at other person, angry, glaring,
 ```
 1boy, solo, male focus, femboy, androgynous, petite, short, slender, narrow shoulders, pale skin, smooth skin,
 
-short black hair, rounded bob cut, 1.1::single silver streak in bangs ::, silver strand over one eye, eyes visible through hair, silver underlayer, short silver strands at nape, -1::long hair::, -1::silver sidelocks::,
+short black hair, layered short hair, choppy ends, -1::bob cut::, 1.1::single silver streak in bangs ::, silver strand over one eye, eyes visible through hair, silver underlayer, short silver strands at nape, -1::long hair::, -1::silver sidelocks::,
 
 light gray eyes, round eyes, slightly droopy eyes, large eyes, long eyelashes, small pupils, thin eyebrows, pretty face, mole under eye,
 
@@ -806,7 +808,7 @@ standing, arms crossed, annoyed, glaring back, pout,
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -858,7 +860,7 @@ leaning on wall, slouching, half-closed eyes, watching, hands in pockets,
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -910,7 +912,7 @@ piggyback, riding on back, arms raised, cheering, laughing,
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 
@@ -966,7 +968,7 @@ shouting back, angry, forehead to forehead, fist raised,
 ```
 1man, solo, male focus, masculine, skinny, average height, fair skin,
 
-medium two-tone hair, dusty blue and black hair, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
+medium dusty blue hair, 1.1::black roots::, two-tone hair, black hair at back, low ponytail, messy hair, long parted bangs, hair between eyes, sidelocks,
 
 green eyes, droopy eyes, thin eyebrows,
 

@@ -71,7 +71,7 @@ function diary() {
 
 function photos() {
   view.innerHTML = `<section class="collection album"><h3>사진첩 (${mh.photos.length})</h3><div class="grid">${mh.photos.map(p =>
-    `<button class="card photo" data-p="${p.id}" aria-label="사진 ${esc(p.id.replace(/^p/, ''))} 확대">${img(`../img/photos/${p.id}.png`, '')}</button>`).join('')}</div></section>`;
+    `<button class="card photo" data-p="${p.id}" aria-label="사진 ${esc(p.id.replace(/^p/, ''))} 확대">${img(`../img/photos/${p.id}.jpg`, '')}</button>`).join('')}</div></section>`;
   view.querySelectorAll('.photo').forEach(b => b.onclick = () => photo(b.dataset.p));
 }
 
@@ -110,7 +110,7 @@ function photo(id) {
   box.className = 'lb'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'photo-window-title'); box.setAttribute('aria-describedby', 'photo-caption');
   box.innerHTML = `<div class="lb-in">
     <div class="lb-bar"><span id="photo-window-title">사진 보기</span><button type="button" aria-label="닫기">×</button></div>
-    ${img(`../img/photos/${p.id}.png`, '')}<p id="photo-caption">${esc(p.caption)}</p>
+    ${img(`../img/photos/${p.id}.jpg`, '')}<p id="photo-caption">${esc(p.caption)}</p>
   </div>`;
   const close = () => { box.remove(); removeEventListener('keydown', onKey); prev && prev.focus && prev.focus(); };
   const onKey = e => { if (e.key === 'Escape') close(); };
