@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이동규의 미니홈피</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="frame">
+  <div class="topbar"><span>▶ 이동규의 미니홈피</span><a href="../index.html">참사람기숙학원 ▸</a></div>
+  <div class="stage">
+    <div class="book">
+      <div class="rings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <aside class="left">
+        <p class="counter-line">TODAY <b id="today">0</b> | TOTAL <b id="total">0</b></p>
+        <img class="minime" src="../img/lee-donggyu.png" alt="이동규" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'minime ph',textContent:'이미지 준비 중'}))">
+        <p class="mood" id="mood"></p>
+        <p class="status" id="status"></p>
+        <p class="intro" id="intro"></p>
+        <details class="wave"><summary id="wave-title"></summary><ul id="wave"></ul></details>
+      </aside>
+      <section class="right">
+        <h1 class="mhtitle">이동규님의 미니홈피</h1>
+        <div id="view"></div>
+      </section>
+      <nav class="tabs" id="tabs" role="tablist" aria-label="미니홈피 메뉴" aria-orientation="vertical">
+        <button role="tab" aria-selected="true" aria-controls="view" data-t="home" class="on">홈</button>
+        <button role="tab" aria-selected="false" aria-controls="view" data-t="diary" id="diary-tab">다이어리</button>
+        <button role="tab" aria-selected="false" aria-controls="view" data-t="photos">사진첩</button>
+        <button role="tab" aria-selected="false" aria-controls="view" data-t="gifts">선물함</button>
+        <button role="tab" aria-selected="false" aria-controls="view" data-t="ilchon">일촌</button>
+        <button role="tab" aria-selected="false" aria-controls="view" data-t="guest" id="guest-tab">방명록</button>
+        <button role="tab" aria-selected="false" aria-controls="view" data-t="vault" id="vault-tab"></button>
+      </nav>
+    </div>
+    <aside class="side">
+      <div class="panel"><b class="ph-title">스탯</b><div id="stats"></div></div>
+      <div class="panel bgm"><b class="ph-title">BGM</b>
+        <div class="bgm-row"><a id="bgm-play" target="_blank" rel="noopener" aria-label="유튜브에서 듣기">▶</a><a id="bgm-title" target="_blank" rel="noopener"></a></div></div>
+      <div class="panel dday"><b id="dday">D-0</b><span id="dday-label"></span></div>
+      <div class="panel"><b class="ph-title">도토리</b> 🌰 <span id="dotori">0</span>개</div>
+      <button class="panel gobtn" data-go="gifts" id="gift-link"></button>
+    </aside>
+  </div>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

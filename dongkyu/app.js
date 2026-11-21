@@ -1,0 +1,212 @@
+import { walkInRoom } from './minime.js';
+
+const $ = s => document.querySelector(s);
+const view = $('#view');
+const CIRCLES = ['청룡회', '백호회', '주작회', '현무회', '무소속'];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let copy = {}, chars = [], pin = '', unlocked = false, ui = {};
+let mh = { diary: [], guestbook: [], ilchon: [], ilchonNames: [], gifts: [], photos: [], notes: {}, comments: {} };
+
+const PH = '<div class=ph>준비 중</div>'; // 따옴표 없음: onerror 속성 안에 들어감
+const img = (src, alt) => `<img src="${src}" alt="${esc(alt)}" onerror="this.outerHTML='${PH}'">`;
+const face = c => img(`../img/${c.id}.png`, c.name);
+const rank = c => c.rankHidden ? '비공개' : c.rank ? c.rank + '위 (상위 10)' : '-';
+const nameOf = id => (chars.find(c => c.id === id) || { name: id }).name;
+const nick = id => (mh.ilchonNames.find(i => i.id === id) || {}).name;
+const short = d => d.slice(2); // 2006.10.21 -> 06.10.21
+const N = '<em class="n">N</em>';
+const note = (head, sub, body) => `<div class="note"><b>${esc(head)}</b> ${sub ? `<small>${esc(sub)}</small>` : ''}<br>${esc(body)}</div>`;
+const led = (n, w) => `<span class="led">${String(n).padStart(w, '0')}</span>`;
+
+// 왼쪽 페이지와 오른쪽 정보 패널
+function widgets() {
+  $('#today').innerHTML = led(Math.floor(Math.random() * 30) + 2, 4);
+  $('#total').innerHTML = led(13200 + Math.floor(Math.random() * 400), 6);
+  $('#mood').textContent = `TODAY IS.. ${ui.mood.emoji} ${ui.mood.text}`;
+  $('#status').textContent = ui.status;
+  $('#intro').textContent = ui.intro;
+  const yt = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(`${ui.bgm.title} ${ui.bgm.artist}`);
+  $('#bgm-title').textContent = `${ui.bgm.title} - ${ui.bgm.artist}`;
+  $('#bgm-title').href = $('#bgm-play').href = yt;
+  $('#dday').textContent = `D-${ui.dday.days}`;
+  $('#dday-label').textContent = ui.dday.label;
+  $('#dotori').textContent = ui.dotori.toLocaleString();
+  $('#vault-tab').textContent = `${ui.vault.tab} 🔒`;
+  $('#guest-tab').innerHTML = `방명록 ${N}`;
+  $('#diary-tab').innerHTML = `다이어리 ${N}`;
+  $('#wave-title').textContent = ui.wave.title;
+  // 파도타기: 누르면 아래로 펼쳐지는 목록
+  $('#wave').innerHTML = `<li><a href="../index.html">참사람기숙학원</a></li>` +
+    mh.ilchonNames.map(i => `<li class="off">${esc(nameOf(i.id))} (준비 중)</li>`).join('');
+  $('#stats').innerHTML = ui.stats.map(([k, v]) => `<div class="srow"><span>${esc(k)}</span><i style="--v:${v}%"></i><b>${v}</b></div>`).join('');
+  $('#gift-link').textContent = `선물함 ${mh.gifts.length} · 소망상자 0`;
+}
+
+// 홈: 한 화면에 다 보이는 요약 (최근 소식, 개수표, 미니룸, 일촌평)
+function home() {
+  const news = [
+    ...mh.diary.map(d => ({ date: d.date, t: `다이어리 · ${d.title}` })),
+    ...mh.guestbook.map(g => ({ date: g.date, t: `방명록 · ${nameOf(g.from)}님이 글을 남겼어요` })),
+    ...mh.gifts.map(g => ({ date: g.date, t: `선물함 · ${nameOf(g.from)}님이 ${g.item || '선물'}을 보냈어요` }))
+  ].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
+  const row = (t, label, n, mark) => `<td><button data-go="${t}">${label}${mark ? ' ' + N : ''}</button></td><td>${n}</td>`;
+  view.innerHTML = `<div class="top2">
+    <div class="news"><div class="lab">Updated news <small>TODAY STORY</small></div>${news.map((x, i) =>
+      `<div>${i < 2 ? N : '<em class="n off"></em>'}<span>${esc(x.t)}</span><small>${short(x.date)}</small></div>`).join('')}</div>
+    <table class="stat" aria-label="미니홈피 현황"><tr>${row('diary', '다이어리', mh.diary.length, 1)}</tr><tr>${row('photos', '사진첩', mh.photos.length)}</tr><tr>${row('gifts', '선물함', mh.gifts.length)}</tr><tr>${row('ilchon', '일촌', mh.ilchonNames.length)}</tr><tr>${row('guest', '방명록', mh.guestbook.length, 1)}</tr></table>
+  </div>
+  <div class="lab">Mini Room <small>EXPRESS YOURSELF</small></div>
+  <div class="roomimg">${img('../img/room.png?v=3', '이동규의 기숙사 미니룸')}<i class="px-shadow"></i><canvas class="px-me" width="24" height="34" role="img" aria-label="미니룸을 걸어 다니는 이동규"></canvas></div>
+  <div class="lab">What friends say <small>${esc(ui.news.friends)}</small></div>
+  <ul class="fs">${mh.ilchon.map(i => `<li><span>${esc(i.body)}</span><small>(${esc(nick(i.from) || '')} ${esc(nameOf(i.from))})</small></li>`).join('')}</ul>`;
+  stopRoom = walkInRoom(view.querySelector('.roomimg'));
+}
+
+function diary() {
+  const list = [...mh.diary].sort((a, b) => b.date.localeCompare(a.date));
+  view.innerHTML = `<h3>다이어리 (${list.length}) ${N}</h3><div>` + list.map(d => note(d.title, d.date, d.body)).join('') + '</div>';
+}
+
+function photos() {
+  view.innerHTML = `<h3>사진첩 (${mh.photos.length})</h3><div class="grid five">${mh.photos.map(p => `<button class="card photo" data-p="${p.id}">${img(`../img/photos/${p.id}.png`, p.caption)}<span>${esc(p.caption)}</span></button>`).join('')}</div>`;
+  view.querySelectorAll('.photo').forEach(b => b.onclick = () => photo(b.dataset.p));
+}
+
+// 선물함: 받은 아이템 목록 (아이템 이름, 보낸 사람, 날짜, 메시지, 도토리)
+function gifts() {
+  view.innerHTML = `<h3>선물함 (${mh.gifts.length})</h3><div class="grid three">${mh.gifts.map(g =>
+    `<div class="card gift"><span class="item">${esc(g.item || '도토리 선물')}</span><b>${esc(nameOf(g.from))}</b><small>${short(g.date)}</small><span class="msg">${esc(g.msg)}</span><small>🌰 ${g.dotori}</small></div>`).join('')}</div>`;
+}
+
+function ilchon() {
+  view.innerHTML = `<h3>일촌 (${mh.ilchonNames.length})</h3><div class="grid five">${mh.ilchonNames.map(i =>
+    `<div class="card ilc"><b>${esc(nameOf(i.id))}</b><span>${esc(i.name).replace(' ', '<br>')}</span></div>`).join('')}</div>`;
+}
+
+// 사진 누르면 큰 사진과 설명 전체를 보여줌 (Esc, 바깥 클릭, 닫기 버튼으로 닫음)
+function photo(id) {
+  const p = mh.photos.find(x => x.id === id), prev = document.activeElement;
+  const box = document.createElement('div');
+  box.className = 'lb'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', p.caption);
+  box.innerHTML = `<div class="lb-in">${img(`../img/photos/${p.id}.png`, p.caption)}<p>${esc(p.caption)}</p><button>닫기</button></div>`;
+  const close = () => { box.remove(); removeEventListener('keydown', onKey); prev && prev.focus && prev.focus(); };
+  const onKey = e => { if (e.key === 'Escape') close(); };
+  box.onclick = e => { if (e.target === box) close(); };
+  box.querySelector('button').onclick = close;
+  addEventListener('keydown', onKey);
+  document.body.append(box);
+  box.querySelector('button').focus();
+}
+
+// 방명록: 최신순, 5개씩 페이지, 번호는 작성 순서
+function guest(page = 0) {
+  const per = 4, all = [...mh.guestbook].sort((a, b) => a.date.localeCompare(b.date));
+  const list = all.map((g, i) => ({ ...g, no: i + 1 })).reverse();
+  const pages = Math.ceil(list.length / per);
+  view.innerHTML = `<h3>방명록 (${list.length})</h3>` + list.slice(page * per, page * per + per).map(g => `
+    <div class="gb"><div class="gb-head"><span class="no">#${g.no}</span><span class="av">${img(`../img/${g.from}.png`, nameOf(g.from))}</span>
+      <b>${esc(nameOf(g.from))}</b>${nick(g.from) ? `<i>${esc(nick(g.from))}</i>` : ''}<small>${esc(g.date)}</small></div>
+      <p>${g.secret ? '🔒 비밀글입니다. 주인장만 볼 수 있어요.' : esc(g.body)}</p>
+      ${g.reply && !g.secret ? `<p class="reply">└ <b>이동규</b> ${esc(g.reply)}</p>` : ''}</div>`).join('') +
+    `<div class="pager">${Array.from({ length: pages }, (_, i) => `<button data-p="${i}"${i === page ? ' class="on"' : ''}>${i + 1}</button>`).join('')}</div>`;
+  view.querySelectorAll('.pager button').forEach(b => b.onclick = () => { guest(+b.dataset.p); toTop(); view.querySelector('.pager button.on').focus(); });
+}
+
+// 잠금 화면: 힌트 없음
+function lock() {
+  view.innerHTML = `<div class="pin"><p>${esc(ui.vault.lock)}</p>
+  <form><input inputmode="numeric" maxlength="4" autocomplete="off" aria-label="비밀번호"> <button>확인</button></form>
+  <p class="err" role="alert"></p></div>`;
+  const f = view.querySelector('form');
+  f.onsubmit = e => {
+    e.preventDefault();
+    if (f.querySelector('input').value === pin) { unlocked = true; vault(); }
+    else view.querySelector('.err').textContent = '비밀번호가 틀렸어요.';
+  };
+  f.querySelector('input').focus();
+}
+
+// 열린 업무함: 파별 한 줄(5·5·5·5·3), 본인(이동규)은 목록에서 제외
+function vault() {
+  if (!unlocked) return lock();
+  view.innerHTML = `<h3>${esc(ui.vault.title)}</h3>` + CIRCLES.map(k => {
+    const list = chars.filter(c => c.circle === k && c.id !== 'lee-donggyu');
+    return `<div class="sec"><h4>${k} <small>${esc(ui.circles[k] || '')}</small></h4><div class="grid five">${list.map(c =>
+      `<button class="card" data-id="${c.id}">${face(c)}<span>${esc(c.name)}${c.leader ? ' ★' : ''}</span></button>`).join('')}</div></div>`;
+  }).join('');
+  view.querySelectorAll('.card').forEach(b => b.onclick = () => file(b.dataset.id));
+}
+
+// 프로필 밑 덧글: 학생회와 친한 아이들이 남김, 대댓글 포함, 없는 인물은 섹션 생략
+const cmLine = (c, re) => `<div class="cm${re ? ' re' : ''}">${re ? '└ ' : ''}<span class="av">${img(`../img/${c.from}.png`, nameOf(c.from))}</span><b>${esc(nameOf(c.from))}</b> ${esc(c.body)}</div>`;
+const comments = id => {
+  const list = (mh.comments || {})[id] || [];
+  if (!list.length) return '';
+  const n = list.reduce((s, c) => s + 1 + (c.replies || []).length, 0);
+  return `<div class="cmbox"><h3>덧글 (${n})</h3>` + list.map(c => cmLine(c) + (c.replies || []).map(r => cmLine(r, true)).join('')).join('') + '</div>';
+};
+
+function file(id) {
+  const c = chars.find(x => x.id === id), cp = copy[id] || {}, memo = mh.notes[id];
+  view.innerHTML = `<button class="back">◀ 목록으로</button>
+  <div class="detail"><div>${face(c)}</div><div>
+  <h3>${esc(c.name)}</h3>
+  ${cp.tagline ? `<p class="status">"${esc(cp.tagline)}"</p>` : ''}
+  ${cp.desc ? `<p class="desc">${esc(cp.desc)}</p>` : ''}
+  <div class="chips">${c.traits.map(t => `<i>${esc(t)}</i>`).join('')}</div>
+  <table>
+  <tr><th>소속</th><td>${c.circle}${c.leader ? ' (반장)' : ''}</td></tr>
+  <tr><th>학년</th><td>${c.grade}학년 · ${c.gender}</td></tr>
+  <tr><th>서열</th><td>${rank(c)}</td></tr>
+  <tr><th>생일</th><td>${c.birthday ? esc(c.birthday) : '?'}${c.birthdayNote ? ` <small class="cn">${esc(c.birthdayNote)}</small>` : ''}</td></tr>
+  <tr><th>별자리</th><td>${c.zodiac ? esc(c.zodiac) : '?'}</td></tr>
+  <tr><th>혈액형</th><td>${c.bloodType}형</td></tr>
+  <tr><th>관계</th><td>${esc(c.relations)}</td></tr>
+  </table>
+  ${memo ? `<h3>${esc(ui.vault.memoLabel)}</h3><p class="desc">${esc(memo)}</p>` : ''}
+  </div></div>
+  ${comments(id)}`;
+  view.querySelector('.back').onclick = () => { vault(); view.querySelector(`.card[data-id="${id}"]`).focus(); };
+  toTop(); view.querySelector('.back').focus();
+}
+
+// 탭 이동: 탭 버튼, 홈 개수표, 선물함 링크가 모두 이 함수를 쓴다
+let stopRoom = null; // 홈의 미니룸 걷기 애니메이션을 멈추는 함수
+let ready = false; // 데이터가 오기 전에는 탭이 동작하지 않게 막음
+const tabs = { home, diary, photos, gifts, ilchon, guest: () => guest(0), vault };
+function go(t) {
+  if (!ready || !tabs[t]) return;
+  document.querySelectorAll('#tabs button').forEach(x => { const on = x.dataset.t === t; x.classList.toggle('on', on); x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; });
+  if (stopRoom) { stopRoom(); stopRoom = null; }
+  tabs[t]();
+  toTop();
+}
+const toTop = () => { view.parentElement.scrollTop = 0; scrollTo(0, 0); };
+// 탭 목록은 위아래 방향키로 이동
+$('#tabs').addEventListener('keydown', e => {
+  const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]; if (!d) return;
+  const bs = [...document.querySelectorAll('#tabs button')], i = bs.indexOf(document.activeElement); if (i < 0) return;
+  e.preventDefault(); const n = bs[(i + d + bs.length) % bs.length]; n.focus(); go(n.dataset.t);
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-t],[data-go]');
+  if (b) go(b.dataset.t || b.dataset.go);
+});
+
+// 별 커서 효과 (마우스 환경 + 모션 허용일 때만)
+if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
+  let last = 0;
+  addEventListener('mousemove', e => {
+    if (e.timeStamp - last < 45) return;
+    last = e.timeStamp;
+    const s = document.createElement('span');
+    s.className = 'spark'; s.textContent = '✦';
+    s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px';
+    document.body.append(s);
+    setTimeout(() => s.remove(), 600);
+  });
+}
+
+Promise.all(['characters', 'notes', 'copy', 'minihome', 'ui'].map(n => fetch(`../data/${n}.json`).then(r => r.json())))
+  .then(([c, n, cp, m, u]) => { chars = c; pin = n.pin; copy = cp.chars; mh = m; ui = u; ready = true; widgets(); home(); })
+  .catch(() => { view.innerHTML = '<p>데이터를 불러오지 못했어요. 파일을 직접 열지 말고 서버(또는 GitHub Pages)로 열어 주세요.</p>'; });

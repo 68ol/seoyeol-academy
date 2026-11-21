@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>참사람기숙학원</title>
+<style>
+:root{--g:#1f5a3a;--g2:#2f7d52;--n:#1d2f5c;--gold:#e8d98a;--paper:#f3f1e4;--line:#b9b49a}
+*{box-sizing:border-box}
+body{margin:0;background:#d9d6c3;font:13px/1.65 Dotum,"돋움","Malgun Gothic",sans-serif;color:#222}
+.wrap{max-width:960px;margin:0 auto;background:var(--paper);border-left:2px solid var(--line);border-right:2px solid var(--line);min-height:100vh}
+.tiny{background:#16432b;padding:2px 10px;font-size:10px}
+.tiny a{color:#b9cdbf;text-decoration:none}
+.tiny a:hover,.tiny a:focus-visible{color:#fff;text-decoration:underline}
+:focus-visible{outline:2px solid var(--n);outline-offset:2px}
+nav a:focus-visible{outline-color:var(--gold)}
+header{background:var(--g);color:#fff;padding:14px 20px;border-bottom:4px double var(--gold);display:flex;align-items:center;gap:14px}
+.logo{width:72px;height:72px;flex:none}
+header h1{margin:0;font:bold 28px Batang,"바탕",serif;letter-spacing:2px}
+header p{margin:2px 0 0;color:var(--gold);font-size:14px}
+nav{background:var(--n);display:flex;flex-wrap:wrap}
+nav a{color:#fff;padding:8px 18px;text-decoration:none;border-right:1px solid #3b4f82}
+nav a:hover,nav a:focus-visible{background:var(--gold);color:var(--n)}
+.notice{background:#fffbe0;border-bottom:1px solid var(--line);padding:5px 12px;color:#a32}
+main{padding:20px;display:grid;grid-template-columns:1fr 250px;gap:20px}
+@media(max-width:760px){main{grid-template-columns:1fr}}
+section{scroll-margin-top:8px}
+h2{margin:0 0 4px;font-size:15px;color:var(--g);border-bottom:2px solid var(--g);padding-bottom:3px}
+.sub{margin:0 0 10px;color:#555;font-size:12px}
+.box{background:#fff;border:1px solid var(--line);padding:12px;margin-bottom:18px}
+.motto{font:bold 20px Batang,"바탕",serif;color:var(--n);text-align:center;padding:12px 0;letter-spacing:3px}
+.ph{display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:4/3;background:repeating-linear-gradient(45deg,#ece9d6,#ece9d6 6px,#f6f4e8 6px,#f6f4e8 12px);color:#6b6848;font-size:11px;border:1px solid var(--line)}
+.box img.pic{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--line)}
+table.board{width:100%;border-collapse:collapse;font-size:12px}
+.board th{background:#e9e6d0;border-top:2px solid var(--g);border-bottom:1px solid var(--line);padding:5px 4px}
+.board td{border-bottom:1px dotted var(--line);padding:5px 4px;text-align:center}
+.board td.t{text-align:left}
+.board button{all:unset;cursor:pointer;color:#222}
+.board button:hover,.board button:focus-visible{color:var(--g2);text-decoration:underline}
+.board .tag{color:var(--g2);font-weight:bold;margin-right:4px}
+.board tr.open td{background:#faf9ef;text-align:left;padding:10px 12px}
+.attach{margin-top:8px;max-width:360px}
+.attach small{display:block;color:#555;margin-top:3px}
+.grid{display:grid;gap:10px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(max-width:760px){.g3,.g5{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.board th:nth-child(n+3),.board td:nth-child(n+3){display:none}}
+.card{font-size:12px}
+.card b{display:block;margin-top:4px;color:var(--n)}
+.card em{font-style:normal;color:var(--g2);margin-left:4px}
+.card p{margin:2px 0 0;text-wrap:pretty}
+.card small{display:block;color:#666;margin-top:2px}
+table.sch{width:100%;border-collapse:collapse}
+.sch th{width:46px;text-align:left;color:var(--g);vertical-align:top;padding:4px 0;border-bottom:1px dotted var(--line)}
+.sch td{padding:4px 0;border-bottom:1px dotted var(--line)}
+.sch tr.now th,.sch tr.now td{background:#fffbe0}
+ul.rules{list-style:none;margin:0;padding:0}
+.rules li{padding:4px 0;border-bottom:1px dotted var(--line)}
+aside .box h2{font-size:13px}
+.w p{margin:3px 0}
+.w .big{font:bold 22px "Courier New",monospace;color:var(--n)}
+.led{font:bold 12px "Courier New",monospace;background:#111;color:#ff9d2e;padding:0 3px;letter-spacing:1px}
+footer{text-align:center;color:#666;font-size:11px;padding:16px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="tiny"><a href="dongkyu/index.html">이동규 미니홈피</a></div>
+<header>
+  <img class="logo" src="img/logo.svg" alt="참사람기숙학원 로고" onerror="this.style.display='none'">
+  <div><h1>참사람기숙학원</h1><p>전원 기숙형 사립학원</p></div>
+</header>
+<nav aria-label="주 메뉴"><a href="#intro">학원소개</a><a href="#notice">공지사항</a><a href="#staff">교직원</a><a href="#places">학교시설</a><a href="#schedule">학사일정</a><a href="#rules">생활규정</a></nav>
+<div class="notice"><marquee id="mq">공지사항을 불러오는 중입니다.</marquee></div>
+<main>
+<div>
+  <section id="intro" class="box"><div class="motto">바른 생각 · 바른 행동 · 바른 사람</div><p id="intro-t"></p><p id="motto-t" style="color:#555;font-size:12px"></p></section>
+  <section id="notice"><h2>공지사항</h2><div class="box"><table class="board"><thead><tr><th style="width:44px">번호</th><th>제목</th><th style="width:90px">작성자</th><th style="width:78px">작성일</th><th style="width:44px">조회</th></tr></thead><tbody id="board"></tbody></table></div></section>
+  <section id="staff"><h2>교직원</h2><div class="box"><div class="grid g3" id="staff-g"></div></div></section>
+  <section id="places"><h2>학교시설</h2><div class="box"><div class="grid g5" id="places-g"></div></div></section>
+  <section id="schedule"><h2>학사일정</h2><div class="box"><table class="sch" id="sched"></table></div></section>
+  <section id="rules"><h2>생활규정</h2><div class="box"><ul class="rules" id="rules-l"></ul></div></section>
+</div>
+<aside>
+  <div class="box w"><h2>현재 시각</h2><p class="big" id="clock">00:00</p><p id="bell"></p></div>
+  <div class="box w"><h2>오늘의 급식</h2><p><b>조식</b> <span id="m-b"></span></p><p><b>중식</b> <span id="m-l"></span></p><p><b>석식</b> <span id="m-d"></span></p></div>
+  <div class="box w"><h2 id="month-h">이번 달</h2><p id="w-text"></p><p id="w-sch"></p></div>
+  <div class="box w"><h2>방문자</h2><p style="margin:0">Today <span class="led" id="v-t">0000</span> Total <span class="led" id="v-n">000000</span></p></div>
+</aside>
+</main>
+<footer id="footer"></footer>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const PH = txt => `<div class=ph>${txt}</div>`;
+const pic = (src, alt, txt) => `<img class="pic" src="${src}" alt="${esc(alt)}" onerror="this.outerHTML='${PH(txt)}'">`;
+const mon = new Date().getMonth() + 1;
+
+Promise.all(['school', 'copy'].map(n => fetch(`data/${n}.json`).then(r => r.json()))).then(([s, c]) => {
+  $('intro-t').textContent = s.intro;
+  $('motto-t').textContent = s.mottoNote;
+  $('mq').textContent = s.notices.slice(0, 4).map(n => `※ [${n.tag}] ${n.title}`).join('   ');
+
+  // 공지 게시판: 제목을 누르면 본문과 사진 첨부란이 열린다
+  $('board').innerHTML = s.notices.map(n => `<tr><td>${n.no}</td><td class="t"><button data-no="${n.no}" aria-expanded="false"><span class="tag">[${esc(n.tag)}]</span>${esc(n.title)}</button></td><td>${esc(n.author)}</td><td>${esc(n.date.slice(2))}</td><td>${n.views}</td></tr>`).join('');
+  $('board').onclick = e => {
+    const b = e.target.closest('button[data-no]'); if (!b) return;
+    const tr = b.closest('tr'), nx = tr.nextElementSibling;
+    if (nx && nx.classList.contains('open')) { nx.remove(); b.setAttribute('aria-expanded', 'false'); return; }
+    const n = s.notices.find(x => x.no == b.dataset.no);
+    const row = document.createElement('tr'); row.className = 'open';
+    row.innerHTML = `<td colspan="5"><p style="margin:0">${esc(n.body)}</p>${n.photo ? `<div class="attach">${pic(`img/notices/n${n.no}.png`, n.photo, '사진 첨부란')}<small>${esc(n.photo)}</small></div>` : ''}</td>`;
+    tr.after(row); b.setAttribute('aria-expanded', 'true');
+  };
+
+  $('staff-g').innerHTML = s.staff.map(p => `<div class="card">${pic(`img/staff/${p.id}.png`, p.name, '사진 첨부란')}<b>${esc(p.name)}<em>${esc(p.role)}</em></b><p>${esc(p.desc)}</p></div>`).join('');
+  $('places-g').innerHTML = s.places.map(p => `<div class="card">${pic(`img/places/${p.id}.png`, p.name, '사진 첨부란')}<b>${esc(p.name)}</b><p>${esc(p.desc)}</p></div>`).join('');
+
+  const sc = c.school;
+  $('sched').innerHTML = sc.schedule.slice(2).concat(sc.schedule.slice(0, 2)).map(m =>
+    `<tr${m.month === mon ? ' class="now"' : ''}><th>${m.month}월</th><td><b>${esc(m.title)}</b><br>${esc(m.desc)}</td></tr>`).join('');
+  $('rules-l').innerHTML = sc.rules.map(r => `<li>${esc(r)}</li>`).join('');
+
+  // 위젯
+  $('m-b').textContent = s.widgets.meals.breakfast; $('m-l').textContent = s.widgets.meals.lunch; $('m-d').textContent = s.widgets.meals.dinner;
+  $('month-h').textContent = `${mon}월 안내`;
+  $('w-text').textContent = (s.widgets.weather.find(w => w.month === mon) || {}).text || '';
+  const cur = sc.schedule.find(m => m.month === mon); $('w-sch').textContent = cur ? cur.title : '';
+  $('bell').textContent = s.widgets.bell;
+  $('footer').textContent = s.footer;
+}).catch(() => { $('mq').textContent = '공지를 불러오지 못했습니다. 서버(또는 GitHub Pages)로 열어 주세요.'; });
+
+// 시계: 실제 현재 시각, 장식용 방문자 숫자
+const tick = () => { const d = new Date(); $('clock').textContent = d.toTimeString().slice(0, 5); };
+tick(); setInterval(tick, 20000);
+$('v-t').textContent = String(Math.floor(Math.random() * 40) + 3).padStart(4, '0');
+$('v-n').textContent = String(48200 + Math.floor(Math.random() * 300)).padStart(6, '0');
+</script>
+</body>
+</html>
