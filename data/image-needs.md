@@ -11,7 +11,7 @@
 - p8 | lee-donggyu, bae-jeonga, yang-huijin | 학교 실내 복도, 배정아가 캠코더를 들고 주변을 촬영하며 양희진이 나른하게 지켜보고 이동규가 어색하게 카메라를 의식하는 구도
 - p9 | lee-donggyu, no-mina, hwangbo-eungyeong | 학교 복도, 황보은경의 등에 업힌 노미나가 신나게 웃고 이동규는 당황한 표정으로 바라보는 모습, 활기찬 스냅사진
 
-## 프로필 이미지 (img/<id>.png) — 24명 (서기 업무함 카드 23명 + 동규 미니미 겸용)
+## 프로필 이미지 (img/<id>.jpg, 480×702) — 24명 (서기 업무함 카드 23명 + 동규 미니미 겸용)
 - park-jonghyeok (박종혁)
 - kim-sangcheol (김상철)
 - yun-jaeuk (윤재욱)
@@ -39,8 +39,8 @@
 
 ## 기타
 - img/room.png (완료: Codex 픽셀아트 미니룸, NAI 불필요)
-- img/lee-donggyu.png (이동규 좌측 미니미, 위 프로필 이미지와 동일)
-- 방명록 작성자 썸네일은 프로필 이미지(img/<id>.png)를 28px로 축소해 사용
+- img/lee-donggyu.jpg (이동규 좌측 미니미, 위 프로필 이미지와 동일)
+- 방명록 작성자 썸네일은 프로필 이미지(img/<id>.jpg)를 28px로 축소해 사용
 
 ## 학교 홈페이지 사진 첨부란
 - 로고: img/logo.svg (완료, ChatGPT 생성 SVG)
