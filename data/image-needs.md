@@ -1,6 +1,6 @@
 # 이미지 제작 목록 (NAI 태그 작업용)
 
-## 미니홈피 사진첩 10장 (img/photos/<id>.png, 5×2)
+## 미니홈피 사진첩 9장 (img/photos/p1.png ~ p9.png, 1024×1024)
 - p1 | lee-donggyu, pyo-haewon | 참사람기숙학원 생활관 방, 정돈된 책상과 침대가 보이는 구도, 표해원이 물건을 정리하며 잔소리하고 이동규가 난처하게 서 있는 일상 스냅사진
 - p2 | lee-donggyu, choi-hyewon, oh-jaepil, shin-dongha | 학생회 회의 공간, 이동규가 책상에 앉아 회의록을 작성하고 최혜원은 지적하며 오재필은 미소 짓고 신동하는 졸고 있는 정면 단체사진
 - p3 | lee-donggyu, an-jiyeong | 학교 복도, 안지영이 신나게 이야기를 늘어놓고 이동규는 난감하게 듣고 있는 순간, 살짝 흔들린 2006년 폴더폰 카메라 느낌
@@ -10,7 +10,6 @@
 - p7 | lee-donggyu, choi-hyewon, pyo-haewon | 학생회 회의 공간, 최혜원과 표해원이 서로를 향해 날카롭게 말다툼하고 이동규가 가운데서 조심스럽게 기록을 살피는 장면
 - p8 | lee-donggyu, bae-jeonga, yang-huijin | 학교 실내 복도, 배정아가 캠코더를 들고 주변을 촬영하며 양희진이 나른하게 지켜보고 이동규가 어색하게 카메라를 의식하는 구도
 - p9 | lee-donggyu, no-mina, hwangbo-eungyeong | 학교 복도, 황보은경의 등에 업힌 노미나가 신나게 웃고 이동규는 당황한 표정으로 바라보는 모습, 활기찬 스냅사진
-- p10 | lee-donggyu, kim-sangcheol, yun-jaeuk | 학교 복도, 김상철이 고함을 치며 윤재욱과 말다툼하고 이동규가 멀찍이 떨어져 눈치를 살피는 장면, 역동적인 일상사진
 
 ## 프로필 이미지 (img/<id>.png) — 24명 (서기 업무함 카드 23명 + 동규 미니미 겸용)
 - park-jonghyeok (박종혁)

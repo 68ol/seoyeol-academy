@@ -8,7 +8,7 @@
 - **그림체(Base):** Peropix 폴더의 `prompts/base/V5_수정_v2.txt`를 앞에 붙인다.
 - **Undesired:** 평소 쓰는 v5_undesired(Notion 'NovelAI Prompt Chunks 백업')에 아래 증명사진 전용 UC를 덧붙인다.
 - **크기:** 증명사진 896×1152(세로 3:4 근처), 사진첩 1024×1024. 사이트는 CSS로 잘라서 보여주므로 비율이 조금 달라도 된다.
-- **파일명:** 증명사진 `img/<id>.png`, 사진첩 `img/photos/p1.png`부터 `p10.png`.
+- **파일명:** 증명사진 `img/<id>.png`, 사진첩 `img/photos/p1.png`부터 `p9.png`.
 - **다인 장면:** 전역 프롬프트에 인원수(1girl, 2boys 등)를 쓰고, 캐릭터별 프롬프트에 인물 태그를 나눠 넣는다. 인물 태그는 아래 증명사진 블록의 윗부분(소품 제외 외형 줄)을 그대로 복사해 쓰면 된다.
 
 ## 증명사진 공통 구도 태그 (모든 인물 뒤에 붙임)
@@ -509,7 +509,7 @@ neutral expression, closed mouth, no smile,
 simple background, white background, flat lighting, even lighting, plain wall, no props,
 ```
 
-## 사진첩 10장 (img/photos/p1.png ~ p10.png)
+## 사진첩 9장 (img/photos/p1.png ~ p9.png, 1024×1024)
 
 전역 프롬프트에 장면 태그를 쓰고, 인물은 캐릭터 프롬프트로 나눠 넣는다. 아래 `[전역]` 아래에는 공통 스냅 질감 태그가 이미 붙어 있다. 사진첩은 2006년 폴더폰이나 디지털카메라로 찍은 스냅 느낌이 목표다.
 
@@ -921,7 +921,11 @@ thick-rimmed glasses, earphones,
 standing, flustered, blush, hands up, looking at them,
 ```
 
-### P10 · 상철 선배랑 재욱 선배... 또 싸워요
+## 예비 사진 프롬프트
+
+### 상철 선배랑 재욱 선배... 또 싸워요
+
+기존 P10 프롬프트. 사진첩 제작 목록에는 포함하지 않는다.
 
 **[전역]**
 ```

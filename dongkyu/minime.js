@@ -23,7 +23,7 @@ export const slices = buildSlices(BOXES, FOOT.w, FOOT.h, FOOT.count);
 
 export const BUFFER = { width: 24, height: 34, groundX: 12, groundY: 26 };
 const STEPS = 16;
-const SQUASH = .75;
+const SQUASH = .5; // 미니룸(room.js)과 같은 2:1 아이소메트릭
 
 /** 방 바닥 위를 걷는 길(방 그림 너비, 높이에 대한 비율). 의자와 침대를 피해 바닥 한가운데를 돈다. */
 export const ROUTE = [[.40, .72], [.50, .86], [.58, .70], [.48, .62]];

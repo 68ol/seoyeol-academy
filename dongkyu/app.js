@@ -1,4 +1,5 @@
 import { walkInRoom } from './minime.js';
+import { paintRoom } from './room.js';
 
 const $ = s => document.querySelector(s);
 const view = $('#view');
@@ -49,16 +50,17 @@ function home() {
     ...mh.guestbook.map(g => ({ date: g.date, t: `방명록 · ${nameOf(g.from)}님이 글을 남겼어요` })),
     ...mh.gifts.map(g => ({ date: g.date, t: `선물함 · ${nameOf(g.from)}님이 ${g.item || '선물'}을 보냈어요` }))
   ].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
-  const row = (t, label, n, mark) => `<td><button data-go="${t}">${label}${mark ? ' ' + N : ''}</button></td><td>${n}</td>`;
+  const cell = (t, label, n, mark) => `<td><button data-go="${t}">${label}${mark ? ' ' + N : ''}</button></td><td>${n}</td>`;
   view.innerHTML = `<div class="top2">
     <div class="news"><div class="lab">Updated news <small>TODAY STORY</small></div>${news.map((x, i) =>
       `<div>${i < 2 ? N : '<em class="n off"></em>'}<span>${esc(x.t)}</span><small>${short(x.date)}</small></div>`).join('')}</div>
-    <table class="stat" aria-label="미니홈피 현황"><tr>${row('diary', '다이어리', mh.diary.length, 1)}</tr><tr>${row('photos', '사진첩', mh.photos.length)}</tr><tr>${row('gifts', '선물함', mh.gifts.length)}</tr><tr>${row('ilchon', '일촌', mh.ilchonNames.length)}</tr><tr>${row('guest', '방명록', mh.guestbook.length, 1)}</tr></table>
+    <table class="stat" aria-label="미니홈피 현황"><tr>${cell('diary', '다이어리', mh.diary.length, 1)}${cell('photos', '사진첩', mh.photos.length)}</tr><tr>${cell('gifts', '선물함', mh.gifts.length)}${cell('ilchon', '일촌', mh.ilchonNames.length)}</tr><tr>${cell('guest', '방명록', mh.guestbook.length, 1)}<td></td><td></td></tr></table>
   </div>
   <div class="lab">Mini Room <small>EXPRESS YOURSELF</small></div>
-  <div class="roomimg">${img('../img/room.png?v=3', '이동규의 기숙사 미니룸')}<i class="px-shadow"></i><canvas class="px-me" width="24" height="34" role="img" aria-label="미니룸을 걸어 다니는 이동규"></canvas></div>
+  <div class="roomimg"><canvas class="room-px" width="190" height="95" role="img" aria-label="이동규의 기숙사 미니룸"></canvas><i class="px-shadow"></i><canvas class="px-me" width="24" height="34" role="img" aria-label="미니룸을 걸어 다니는 이동규"></canvas></div>
   <div class="lab">What friends say <small>${esc(ui.news.friends)}</small></div>
   <ul class="fs">${mh.ilchon.map(i => `<li><span>${esc(i.body)}</span><small>(${esc(nick(i.from) || '')} ${esc(nameOf(i.from))})</small></li>`).join('')}</ul>`;
+  paintRoom(view.querySelector('.room-px'));
   stopRoom = walkInRoom(view.querySelector('.roomimg'));
 }
 
@@ -68,27 +70,48 @@ function diary() {
 }
 
 function photos() {
-  view.innerHTML = `<h3>사진첩 (${mh.photos.length})</h3><div class="grid five">${mh.photos.map(p => `<button class="card photo" data-p="${p.id}">${img(`../img/photos/${p.id}.png`, p.caption)}<span>${esc(p.caption)}</span></button>`).join('')}</div>`;
+  view.innerHTML = `<section class="collection album"><h3>사진첩 (${mh.photos.length})</h3><div class="grid">${mh.photos.map(p =>
+    `<button class="card photo" data-p="${p.id}" aria-label="사진 ${esc(p.id.replace(/^p/, ''))} 확대">${img(`../img/photos/${p.id}.png`, '')}</button>`).join('')}</div></section>`;
   view.querySelectorAll('.photo').forEach(b => b.onclick = () => photo(b.dataset.p));
 }
 
-// 선물함: 받은 아이템 목록 (아이템 이름, 보낸 사람, 날짜, 메시지, 도토리)
 function gifts() {
-  view.innerHTML = `<h3>선물함 (${mh.gifts.length})</h3><div class="grid three">${mh.gifts.map(g =>
-    `<div class="card gift"><span class="item">${esc(g.item || '도토리 선물')}</span><b>${esc(nameOf(g.from))}</b><small>${short(g.date)}</small><span class="msg">${esc(g.msg)}</span><small>🌰 ${g.dotori}</small></div>`).join('')}</div>`;
+  const rows = mh.gifts.map(gift => `<li><details>
+    <summary class="entry-row">
+      <span class="gift-name"><b>${esc(gift.item || '도토리 선물')}</b><span>${esc(nameOf(gift.from))}</span></span>
+      <span class="gift-date">${esc(short(gift.date))}</span>
+      <span class="entry-toggle">메시지</span>
+    </summary>
+    <div class="entry-message"><p>${esc(gift.msg)}</p><small>🌰 도토리 ${esc(gift.dotori)}개</small></div>
+  </details></li>`);
+  view.innerHTML = `<section class="collection gifts"><h3>받은 선물 <small>${mh.gifts.length}개</small></h3>
+    <ul class="entry-list">${rows.join('')}</ul></section>`;
 }
 
 function ilchon() {
-  view.innerHTML = `<h3>일촌 (${mh.ilchonNames.length})</h3><div class="grid five">${mh.ilchonNames.map(i =>
-    `<div class="card ilc"><b>${esc(nameOf(i.id))}</b><span>${esc(i.name).replace(' ', '<br>')}</span></div>`).join('')}</div>`;
+  const rows = mh.ilchonNames.map(friend => {
+    const name = esc(nameOf(friend.id));
+    const identity = `<span class="friend-name"><b>${name}</b><span>${esc(friend.name)}</span></span>`;
+    const entries = mh.ilchon.filter(entry => entry.from === friend.id);
+    if (!entries.length) return `<li><div class="entry-row">${identity}</div></li>`;
+    return `<li><details>
+      <summary class="entry-row" aria-label="${name} 일촌평 ${entries.length}개">${identity}<span class="entry-toggle">일촌평 ${entries.length}</span></summary>
+      <div class="entry-message">${entries.map(entry => `<p>${esc(entry.body)}</p>`).join('')}</div>
+    </details></li>`;
+  });
+  view.innerHTML = `<section class="collection friends"><h3>일촌 보기 <small>${mh.ilchonNames.length}명</small></h3>
+    <ul class="entry-list">${rows.join('')}</ul></section>`;
 }
 
 // 사진 누르면 큰 사진과 설명 전체를 보여줌 (Esc, 바깥 클릭, 닫기 버튼으로 닫음)
 function photo(id) {
   const p = mh.photos.find(x => x.id === id), prev = document.activeElement;
   const box = document.createElement('div');
-  box.className = 'lb'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', p.caption);
-  box.innerHTML = `<div class="lb-in">${img(`../img/photos/${p.id}.png`, p.caption)}<p>${esc(p.caption)}</p><button>닫기</button></div>`;
+  box.className = 'lb'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'photo-window-title'); box.setAttribute('aria-describedby', 'photo-caption');
+  box.innerHTML = `<div class="lb-in">
+    <div class="lb-bar"><span id="photo-window-title">사진 보기</span><button type="button" aria-label="닫기">×</button></div>
+    ${img(`../img/photos/${p.id}.png`, '')}<p id="photo-caption">${esc(p.caption)}</p>
+  </div>`;
   const close = () => { box.remove(); removeEventListener('keydown', onKey); prev && prev.focus && prev.focus(); };
   const onKey = e => { if (e.key === 'Escape') close(); };
   box.onclick = e => { if (e.target === box) close(); };
@@ -100,7 +123,7 @@ function photo(id) {
 
 // 방명록: 최신순, 5개씩 페이지, 번호는 작성 순서
 function guest(page = 0) {
-  const per = 4, all = [...mh.guestbook].sort((a, b) => a.date.localeCompare(b.date));
+  const per = 5, all = [...mh.guestbook].sort((a, b) => a.date.localeCompare(b.date));
   const list = all.map((g, i) => ({ ...g, no: i + 1 })).reverse();
   const pages = Math.ceil(list.length / per);
   view.innerHTML = `<h3>방명록 (${list.length})</h3>` + list.slice(page * per, page * per + per).map(g => `
@@ -181,7 +204,7 @@ function go(t) {
   tabs[t]();
   toTop();
 }
-const toTop = () => { view.parentElement.scrollTop = 0; scrollTo(0, 0); };
+const toTop = () => { view.parentElement.scrollTop = 0; };
 // 탭 목록은 위아래 방향키로 이동
 $('#tabs').addEventListener('keydown', e => {
   const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]; if (!d) return;
