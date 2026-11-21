@@ -5,7 +5,7 @@ const $ = s => document.querySelector(s);
 const view = $('#view');
 const CIRCLES = ['청룡회', '백호회', '주작회', '현무회', '무소속'];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-let copy = {}, chars = [], pin = '', unlocked = false, ui = {};
+let copy = {}, chars = [], pin = '', unlocked = false, ui = {}, vd = {};
 let mh = { diary: [], guestbook: [], ilchon: [], ilchonNames: [], gifts: [], photos: [], notes: {}, comments: {} };
 
 const PH = '<div class=ph>준비 중</div>'; // 따옴표 없음: onerror 속성 안에 들어감
@@ -149,15 +149,41 @@ function lock() {
   f.querySelector('input').focus();
 }
 
-// 열린 업무함: 파별 한 줄(5·5·5·5·3), 본인(이동규)은 목록에서 제외
-function vault() {
+// 열린 업무함: 위 탭 3개(인물철·학교 생활철·서열 등사본). 마지막 자료철을 기억해 인물 상세에서 돌아온다
+let vtab = 'people', vdoc = null;
+const hp = d => `<a class="hp" href="${d.href}" target="_blank" rel="noopener">${esc(d.link)} ▸</a>`;
+const postit = s => s ? `<div class="postit">${esc(s)}</div>` : '';
+const vpages = {
+  // 파별 한 줄, 무소속에는 동규 본인도 포함
+  people: () => CIRCLES.map(k => `<div class="sec"><h4>${k} <small>${esc(ui.circles[k] || '')}</small></h4><div class="grid five">${chars.filter(c => c.circle === k).map(c =>
+    `<button class="card" data-id="${c.id}">${face(c)}<span>${esc(c.name)}${c.leader ? ' ★' : ''}</span></button>`).join('')}</div></div>`).join(''),
+  school: () => {
+    const d = vd.school.find(x => x.id === vdoc);
+    if (!d) return `<ul class="doclist">${vd.school.map(x => `<li><button data-doc="${x.id}"><b>${esc(x.title)}</b><small>${esc(x.lead)}</small></button></li>`).join('')}</ul>`;
+    return `<button class="back doc-back">◀ ${esc(vd.tabs.school)}</button><div class="doc"><h4>${esc(d.title)}</h4><p class="lead">${esc(d.lead)}</p>
+    <dl>${d.items.map(i => `<dt>${esc(i.label)}</dt><dd>${esc(i.text)}</dd>`).join('')}</dl>${postit(d.memo)}${hp(d)}</div>`;
+  },
+  // 순위표는 characters.json 의 rank 로 만든다(비공개 인물 제외)
+  rank: () => {
+    const r = vd.rank, top = chars.filter(c => c.rank && !c.rankHidden).sort((x, y) => x.rank - y.rank);
+    return `<div class="doc copy"><p class="stamp">${esc(r.stamp)}</p><h4>${esc(r.title)}</h4><p class="lead">${esc(r.lead)}</p>
+    <table class="rk"><tbody>${top.map(c => `<tr><td class="no">${c.rank}</td><td><button class="lk" data-id="${c.id}">${esc(c.name)}</button></td><td>${c.circle}${c.leader ? ' 반장' : ''}</td><td>${c.grade}학년</td></tr>`).join('')}</tbody></table>
+    <p class="small">${esc(r.tableNote)}</p>
+    <h5>순위가 바뀌는 경우</h5><ul>${r.changes.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
+    <h5>도전 규칙</h5><ul>${r.challenge.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
+    <h5>${esc(r.paewang.title)}</h5><p>${esc(r.paewang.text)}</p>${postit(r.memo)}</div>`;
+  },
+};
+function vault(t = vtab) {
   if (!unlocked) return lock();
-  view.innerHTML = `<h3>${esc(ui.vault.title)}</h3>` + CIRCLES.map(k => {
-    const list = chars.filter(c => c.circle === k && c.id !== 'lee-donggyu');
-    return `<div class="sec"><h4>${k} <small>${esc(ui.circles[k] || '')}</small></h4><div class="grid five">${list.map(c =>
-      `<button class="card" data-id="${c.id}">${face(c)}<span>${esc(c.name)}${c.leader ? ' ★' : ''}</span></button>`).join('')}</div></div>`;
-  }).join('');
-  view.querySelectorAll('.card').forEach(b => b.onclick = () => file(b.dataset.id));
+  vtab = t;
+  view.innerHTML = `<h3>${esc(ui.vault.title)}</h3><div class="vtabs" role="tablist">${Object.keys(vpages).map(k =>
+    `<button role="tab" aria-selected="${k === t}" class="${k === t ? 'on' : ''}" data-v="${k}">${esc(vd.tabs[k])}</button>`).join('')}</div>${vpages[t]()}`;
+  view.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { vdoc = null; vault(b.dataset.v); view.querySelector(`[data-v="${b.dataset.v}"]`).focus(); });
+  view.querySelectorAll('[data-id]').forEach(b => b.onclick = () => file(b.dataset.id));
+  view.querySelectorAll('[data-doc]').forEach(b => b.onclick = () => { vdoc = b.dataset.doc; vault('school'); toTop(); view.querySelector('.doc-back').focus(); });
+  const back = view.querySelector('.doc-back');
+  if (back) back.onclick = () => { const id = vdoc; vdoc = null; vault('school'); view.querySelector(`[data-doc="${id}"]`).focus(); };
 }
 
 // 프로필 밑 덧글: 학생회와 친한 아이들이 남김, 대댓글 포함, 없는 인물은 섹션 생략
@@ -172,9 +198,9 @@ const comments = id => {
 function file(id) {
   const c = chars.find(x => x.id === id), cp = copy[id] || {}, memo = mh.notes[id];
   view.innerHTML = `<button class="back">◀ 목록으로</button>
-  <div class="detail"><div class="dhead"><span class="idpic">${face(c)}</span><div>
+  <div class="detail"><div class="idpic">${face(c)}</div><div>
   <h3>${esc(c.name)}</h3>
-  ${cp.tagline ? `<p class="status">"${esc(cp.tagline)}"</p>` : ''}</div></div><div>
+  ${cp.tagline ? `<p class="status">"${esc(cp.tagline)}"</p>` : ''}
   ${cp.desc ? `<p class="desc">${esc(cp.desc)}</p>` : ''}
   <div class="chips">${c.traits.map(t => `<i>${esc(t)}</i>`).join('')}</div>
   <table>
@@ -189,7 +215,7 @@ function file(id) {
   ${memo ? `<h3>${esc(ui.vault.memoLabel)}</h3><p class="desc">${esc(memo)}</p>` : ''}
   </div></div>
   ${comments(id)}`;
-  view.querySelector('.back').onclick = () => { vault(); view.querySelector(`.card[data-id="${id}"]`).focus(); };
+  view.querySelector('.back').onclick = () => { vault(); view.querySelector(`[data-id="${id}"]`).focus(); };
   toTop(); view.querySelector('.back').focus();
 }
 
@@ -230,6 +256,6 @@ if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion
   });
 }
 
-Promise.all(['characters', 'notes', 'copy', 'minihome', 'ui'].map(n => fetch(`../data/${n}.json`).then(r => r.json())))
-  .then(([c, n, cp, m, u]) => { chars = c; pin = n.pin; copy = cp.chars; mh = m; ui = u; ready = true; widgets(); home(); })
+Promise.all(['characters', 'notes', 'copy', 'minihome', 'ui', 'vault'].map(n => fetch(`../data/${n}.json`).then(r => r.json())))
+  .then(([c, n, cp, m, u, v]) => { chars = c; pin = n.pin; copy = cp.chars; mh = m; ui = u; vd = v; ready = true; widgets(); home(); if (location.hash === '#vault') go('vault'); })
   .catch(() => { view.innerHTML = '<p>데이터를 불러오지 못했어요. 파일을 직접 열지 말고 서버(또는 GitHub Pages)로 열어 주세요.</p>'; });
