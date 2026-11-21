@@ -10,7 +10,7 @@ let mh = { diary: [], guestbook: [], ilchon: [], ilchonNames: [], gifts: [], pho
 
 const PH = '<div class=ph>준비 중</div>'; // 따옴표 없음: onerror 속성 안에 들어감
 const img = (src, alt) => `<img src="${src}" alt="${esc(alt)}" onerror="this.outerHTML='${PH}'">`;
-const face = c => img(`../img/${c.id}.jpg`, c.name);
+const face = c => img(`../img/id/${c.id}.jpg`, c.name);
 const rank = c => c.rankHidden ? '비공개' : c.rank ? c.rank + '위 (상위 10)' : '-';
 const nameOf = id => (chars.find(c => c.id === id) || { name: id }).name;
 const nick = id => (mh.ilchonNames.find(i => i.id === id) || {}).name;
@@ -127,7 +127,7 @@ function guest(page = 0) {
   const list = all.map((g, i) => ({ ...g, no: i + 1 })).reverse();
   const pages = Math.ceil(list.length / per);
   view.innerHTML = `<h3>방명록 (${list.length})</h3>` + list.slice(page * per, page * per + per).map(g => `
-    <div class="gb"><div class="gb-head"><span class="no">#${g.no}</span><span class="av">${img(`../img/${g.from}.jpg`, nameOf(g.from))}</span>
+    <div class="gb"><div class="gb-head"><span class="no">#${g.no}</span><span class="av">${img(`../img/${g.from}.png`, nameOf(g.from))}</span>
       <b>${esc(nameOf(g.from))}</b>${nick(g.from) ? `<i>${esc(nick(g.from))}</i>` : ''}<small>${esc(g.date)}</small></div>
       <p>${g.secret ? '🔒 비밀글입니다. 주인장만 볼 수 있어요.' : esc(g.body)}</p>
       ${g.reply && !g.secret ? `<p class="reply">└ <b>이동규</b> ${esc(g.reply)}</p>` : ''}</div>`).join('') +
@@ -161,7 +161,7 @@ function vault() {
 }
 
 // 프로필 밑 덧글: 학생회와 친한 아이들이 남김, 대댓글 포함, 없는 인물은 섹션 생략
-const cmLine = (c, re) => `<div class="cm${re ? ' re' : ''}">${re ? '└ ' : ''}<span class="av">${img(`../img/${c.from}.jpg`, nameOf(c.from))}</span><b>${esc(nameOf(c.from))}</b> ${esc(c.body)}</div>`;
+const cmLine = (c, re) => `<div class="cm${re ? ' re' : ''}">${re ? '└ ' : ''}<span class="av">${img(`../img/${c.from}.png`, nameOf(c.from))}</span><b>${esc(nameOf(c.from))}</b> ${esc(c.body)}</div>`;
 const comments = id => {
   const list = (mh.comments || {})[id] || [];
   if (!list.length) return '';
