@@ -172,9 +172,9 @@ const comments = id => {
 function file(id) {
   const c = chars.find(x => x.id === id), cp = copy[id] || {}, memo = mh.notes[id];
   view.innerHTML = `<button class="back">◀ 목록으로</button>
-  <div class="detail"><div>${face(c)}</div><div>
+  <div class="detail"><div class="dhead"><span class="idpic">${face(c)}</span><div>
   <h3>${esc(c.name)}</h3>
-  ${cp.tagline ? `<p class="status">"${esc(cp.tagline)}"</p>` : ''}
+  ${cp.tagline ? `<p class="status">"${esc(cp.tagline)}"</p>` : ''}</div></div><div>
   ${cp.desc ? `<p class="desc">${esc(cp.desc)}</p>` : ''}
   <div class="chips">${c.traits.map(t => `<i>${esc(t)}</i>`).join('')}</div>
   <table>
