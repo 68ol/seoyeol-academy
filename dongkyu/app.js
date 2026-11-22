@@ -5,12 +5,14 @@ const $ = s => document.querySelector(s);
 const view = $('#view');
 const CIRCLES = ['청룡회', '백호회', '주작회', '현무회', '무소속'];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-let copy = {}, chars = [], pin = '', unlocked = false, ui = {}, vd = {};
+let copy = {}, chars = [], pin = '', unlocked = false, ui = {}, vd = {}, crop = { default: { y: 20, z: 1 }, people: {} };
 let mh = { diary: [], guestbook: [], ilchon: [], ilchonNames: [], gifts: [], photos: [], notes: {}, comments: {} };
 
 const PH = '<div class=ph>준비 중</div>'; // 따옴표 없음: onerror 속성 안에 들어감
 const img = (src, alt) => `<img src="${src}" alt="${esc(alt)}" onerror="this.outerHTML='${PH}'">`;
-const face = c => img(`../img/id/${c.id}.jpg`, c.name);
+// 증명사진 정사각형 크롭: 목록 썸네일과 상세 사진이 같은 값(data/crop.json, tools/crop.html 에서 조정)을 쓴다
+const cropStyle = id => { const k = { ...crop.default, ...(crop.people[id] || {}) }; return `object-position:50% ${k.y}%;transform:scale(${k.z});transform-origin:50% ${k.y}%`; };
+const face = c => `<i class="crop">${img(`../img/id/${c.id}.jpg`, c.name).replace('<img ', `<img style="${cropStyle(c.id)}" `)}</i>`;
 const rank = c => c.rankHidden ? '비공개' : c.rank ? c.rank + '위 (상위 10)' : '-';
 const nameOf = id => (chars.find(c => c.id === id) || { name: id }).name;
 const nick = id => (mh.ilchonNames.find(i => i.id === id) || {}).name;
@@ -263,6 +265,6 @@ if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion
   });
 }
 
-Promise.all(['characters', 'notes', 'copy', 'minihome', 'ui', 'vault'].map(n => fetch(`../data/${n}.json`).then(r => r.json())))
-  .then(([c, n, cp, m, u, v]) => { chars = c; pin = n.pin; copy = cp.chars; mh = m; ui = u; vd = v; ready = true; widgets(); home(); if (location.hash === '#vault') go('vault'); })
+Promise.all(['characters', 'notes', 'copy', 'minihome', 'ui', 'vault', 'crop'].map(n => fetch(`../data/${n}.json`).then(r => r.json())))
+  .then(([c, n, cp, m, u, v, cr]) => { chars = c; pin = n.pin; copy = cp.chars; mh = m; ui = u; vd = v; crop = cr; ready = true; widgets(); home(); if (location.hash === '#vault') go('vault'); })
   .catch(() => { view.innerHTML = '<p>데이터를 불러오지 못했어요. 파일을 직접 열지 말고 서버(또는 GitHub Pages)로 열어 주세요.</p>'; });

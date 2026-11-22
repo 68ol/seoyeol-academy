@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>증명사진 크롭 조정</title>
+<style>
+body{font:12px/1.5 "돋움",Dotum,sans-serif;margin:16px;background:#eef6fc;color:#222}
+h1{font-size:15px;margin:0 0 4px}
+.top{position:sticky;top:0;background:#eef6fc;padding:8px 0;border-bottom:1px solid #9cc6ea;z-index:2}
+.top p{margin:2px 0;color:#555}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:10px}
+.it{background:#fff;border:1px solid #9cc6ea;padding:8px}
+.it.set{border-color:#a64921}
+.it h2{font-size:12px;margin:0 0 6px;display:flex;justify-content:space-between}
+.pv{display:flex;gap:10px;align-items:flex-start}
+.orig{position:relative;width:80px;flex:none}
+.orig img{width:100%;display:block}
+.orig b{position:absolute;left:0;right:0;border:2px solid #a64921;box-sizing:border-box;pointer-events:none}
+.crop{display:block;overflow:hidden;aspect-ratio:1;border:1px solid #9cc6ea;background:#fff}
+.crop img{width:100%;height:100%;object-fit:cover;display:block}
+.c88{width:88px}.c112{width:112px}
+.pv small{display:block;color:#888;text-align:center}
+label{display:flex;align-items:center;gap:6px;margin-top:6px}
+label span{flex:none;min-width:64px;white-space:nowrap}
+input[type=range]{flex:1}
+output{width:36px;text-align:right}
+button{font:inherit;padding:2px 8px;cursor:pointer;white-space:nowrap}
+textarea{width:100%;height:90px;font:11px monospace}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>증명사진 크롭 조정</h1>
+  <p>인물철 목록 썸네일(88px)과 인물 상세 사진(112px)은 같은 값으로 잘립니다. 왼쪽 원본의 빨간 틀이 잘리는 범위입니다.</p>
+  <p>값은 이 브라우저에 자동 저장됩니다. 다 맞추신 뒤 말씀해 주시면 사이트에 고정하겠습니다.</p>
+  <label><span>전체 위치</span><input id="dy" type="range" min="0" max="100" step="1"><output id="dyo"></output></label>
+  <label><span>전체 확대</span><input id="dz" type="range" min="1" max="2" step="0.05"><output id="dzo"></output></label>
+  <p><button id="reset">개별 조정 모두 지우기</button> <button id="copy">값 복사</button></p>
+  <textarea id="out" readonly aria-label="현재 값"></textarea>
+</div>
+<div class="grid" id="grid"></div>
+<script>
+const KEY = 'seoyeol-crop-draft';
+let chars = [], st;
+const eff = id => ({ ...st.default, ...(st.people[id] || {}) });
+const style = k => `object-position:50% ${k.y}%;transform:scale(${k.z});transform-origin:50% ${k.y}%`;
+// 원본(480x702) 위에 정사각형 크롭 범위를 표시: 보이는 정사각형 높이 = 너비/확대, 위치는 y% 기준
+function frame(k) {
+  const H = 702 / 480, side = 1 / k.z;              // 원본 높이(너비=1 기준), 보이는 변 길이
+  const top0 = (H - 1) * k.y / 100;                  // 확대 전 정사각형 위쪽
+  const cy = top0 + k.y / 100;                       // 확대 기준점(정사각형 안 y%)
+  const top = cy - (k.y / 100) * side;               // 확대 후 보이는 위쪽
+  const left = (1 - side) / 2;
+  return `top:${top / H * 100}%;height:${side / H * 100}%;left:${left * 100}%;right:${left * 100}%`;
+}
+function paint(id) {
+  const el = document.querySelector(`[data-id="${id}"]`), k = eff(id);
+  el.querySelectorAll('.crop img').forEach(i => i.style.cssText = style(k));
+  el.querySelector('.orig b').style.cssText = frame(k);
+  el.querySelector('.y').value = k.y; el.querySelector('.yo').value = k.y;
+  el.querySelector('.z').value = k.z; el.querySelector('.zo').value = k.z;
+  el.classList.toggle('set', !!st.people[id]);
+}
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(st));
+  document.getElementById('out').value = JSON.stringify(st, null, 1);
+  document.getElementById('dy').value = st.default.y; document.getElementById('dyo').value = st.default.y;
+  document.getElementById('dz').value = st.default.z; document.getElementById('dzo').value = st.default.z;
+}
+Promise.all(['characters', 'crop'].map(n => fetch(`../data/${n}.json`, { cache: 'no-store' }).then(r => r.json()))).then(([c, cr]) => {
+  chars = c;
+  st = JSON.parse(localStorage.getItem(KEY) || 'null') || cr;
+  const g = document.getElementById('grid');
+  g.innerHTML = chars.map(c => `<div class="it" data-id="${c.id}">
+    <h2><span>${c.name} <small>${c.circle}</small></span><button class="clr">기본값으로</button></h2>
+    <div class="pv"><div class="orig"><img src="../img/id/${c.id}.jpg" alt=""><b></b></div>
+      <div><i class="crop c88"><img src="../img/id/${c.id}.jpg" alt=""></i><small>목록</small></div>
+      <div><i class="crop c112"><img src="../img/id/${c.id}.jpg" alt=""></i><small>상세</small></div></div>
+    <label><span>위치(위↕아래)</span><input class="y" type="range" min="0" max="100" step="1"><output class="yo"></output></label>
+    <label><span>확대</span><input class="z" type="range" min="1" max="2" step="0.05"><output class="zo"></output></label>
+  </div>`).join('');
+  g.querySelectorAll('.it').forEach(el => {
+    const id = el.dataset.id;
+    const set = () => { st.people[id] = { y: +el.querySelector('.y').value, z: +el.querySelector('.z').value }; paint(id); save(); };
+    el.querySelector('.y').oninput = set; el.querySelector('.z').oninput = set;
+    el.querySelector('.clr').onclick = () => { delete st.people[id]; paint(id); save(); };
+    paint(id);
+  });
+  const all = () => { st.default = { y: +document.getElementById('dy').value, z: +document.getElementById('dz').value }; chars.forEach(c => paint(c.id)); save(); };
+  document.getElementById('dy').oninput = all; document.getElementById('dz').oninput = all;
+  document.getElementById('reset').onclick = () => { st.people = {}; chars.forEach(c => paint(c.id)); save(); };
+  document.getElementById('copy').onclick = () => navigator.clipboard.writeText(document.getElementById('out').value);
+  save();
+});
+</script>
+</body>
+</html>
