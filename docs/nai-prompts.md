@@ -269,7 +269,7 @@ neutral expression, closed mouth, no smile,
 simple background, white background, flat lighting, even lighting, plain wall, no props,
 ```
 
-### 최혜원 (choi-hyewon)
+### 최가현 (choi-gahyeon)
 
 ```
 1girl, solo, slender, pale skin, petite,
@@ -574,7 +574,7 @@ thick-rimmed glasses, earphones,
 sitting, writing in notebook, holding pen, nervous smile,
 ```
 
-**[캐릭터] 최혜원**
+**[캐릭터] 최가현**
 ```
 1girl, solo, slender, pale skin, petite,
 
@@ -774,7 +774,7 @@ only a hand visible, white sleeve, gray sweater vest cuff, arranging papers, nea
 1girl, 2boys, student council meeting room, long table, tense atmosphere, candid snapshot, 2000s digital camera photo, flash photography, slightly overexposed, soft film grain, everyday scene,
 ```
 
-**[캐릭터] 최혜원**
+**[캐릭터] 최가현**
 ```
 1girl, solo, slender, pale skin, petite,
 

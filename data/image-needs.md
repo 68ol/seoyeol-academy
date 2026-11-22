@@ -2,12 +2,12 @@
 
 ## 미니홈피 사진첩 9장 (img/photos/p1.jpg ~ p9.jpg, 원본 1024×1024, 사이트용 720×720)
 - p1 | lee-donggyu, pyo-haewon | 참사람기숙학원 생활관 방, 정돈된 책상과 침대가 보이는 구도, 표해원이 물건을 정리하며 잔소리하고 이동규가 난처하게 서 있는 일상 스냅사진
-- p2 | lee-donggyu, choi-hyewon, oh-jaepil, shin-dongha | 학생회 회의 공간, 이동규가 책상에 앉아 회의록을 작성하고 최혜원은 지적하며 오재필은 미소 짓고 신동하는 졸고 있는 정면 단체사진
+- p2 | lee-donggyu, choi-gahyeon, oh-jaepil, shin-dongha | 학생회 회의 공간, 이동규가 책상에 앉아 회의록을 작성하고 최가현은 지적하며 오재필은 미소 짓고 신동하는 졸고 있는 정면 단체사진
 - p3 | lee-donggyu, an-jiyeong | 학교 복도, 안지영이 신나게 이야기를 늘어놓고 이동규는 난감하게 듣고 있는 순간, 살짝 흔들린 2006년 폴더폰 카메라 느낌
 - p4 | lee-donggyu, yun-jaeuk, han-seongmin | 교내 복도, 윤재욱과 한성민이 떠들썩하게 장난치고 이동규는 한쪽에서 눈치를 살피는 모습, 자연스러운 원거리 스냅사진
 - p5 | lee-donggyu, jeong-sujin | 학교 건물 앞, 정수진과 이동규가 나란히 서서 함께 찍은 투샷, 정수진이 브이를 하고 있음, 낮의 자연광
 - p6 | lee-donggyu | 학생회 책상 위에 쌓인 회의록과 필기구 클로즈업, 이동규의 손이 종이를 정리하고 있는 모습, 차분한 실내 조명
-- p7 | lee-donggyu, choi-hyewon, pyo-haewon | 학생회 회의 공간, 최혜원과 표해원이 서로를 향해 날카롭게 말다툼하고 이동규가 가운데서 조심스럽게 기록을 살피는 장면
+- p7 | lee-donggyu, choi-gahyeon, pyo-haewon | 학생회 회의 공간, 최가현과 표해원이 서로를 향해 날카롭게 말다툼하고 이동규가 가운데서 조심스럽게 기록을 살피는 장면
 - p8 | lee-donggyu, bae-jeonga, yang-huijin | 학교 실내 복도, 배정아가 캠코더를 들고 주변을 촬영하며 양희진이 나른하게 지켜보고 이동규가 어색하게 카메라를 의식하는 구도
 - p9 | lee-donggyu, no-mina, hwangbo-eungyeong | 학교 복도, 황보은경의 등에 업힌 노미나가 신나게 웃고 이동규는 당황한 표정으로 바라보는 모습, 활기찬 스냅사진
 
@@ -27,7 +27,7 @@
 - han-jeongu (한정우)
 - seo-mijeong (서미정)
 - jang-yujin (장유진)
-- choi-hyewon (최혜원)
+- choi-gahyeon (최가현)
 - an-jiyeong (안지영)
 - song-eunjeong (송은정)
 - no-mina (노미나)

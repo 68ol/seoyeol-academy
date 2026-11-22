@@ -1,4 +1,9 @@
 {
  "default": {"y": 20, "z": 1},
- "people": {}
+ "people": {
+  "kim-sangcheol": {"y": 14, "z": 1},
+  "park-jonghyeok": {"y": 19, "z": 1},
+  "no-mina": {"y": 15, "z": 1},
+  "yang-huijin": {"y": 11, "z": 1}
+ }
 }
