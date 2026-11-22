@@ -105,12 +105,18 @@ function ilchon() {
 
 // 사진 누르면 큰 사진과 설명 전체를 보여줌 (Esc, 바깥 클릭, 닫기 버튼으로 닫음)
 function photo(id) {
-  const p = mh.photos.find(x => x.id === id), prev = document.activeElement;
+  const p = mh.photos.find(x => x.id === id);
+  lightbox(`../img/photos/${p.id}.jpg`, p.caption, '사진 보기');
+}
+// 업무함 인물 상세의 증명사진: 자르지 않은 원본 비율로 크게
+function bigFace(c) { lightbox(`../img/id/${c.id}.jpg`, c.name, '증명사진', 'portrait'); }
+function lightbox(src, caption, title, kind = '') {
+  const prev = document.activeElement;
   const box = document.createElement('div');
   box.className = 'lb'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'photo-window-title'); box.setAttribute('aria-describedby', 'photo-caption');
-  box.innerHTML = `<div class="lb-in">
-    <div class="lb-bar"><span id="photo-window-title">사진 보기</span><button type="button" aria-label="닫기">×</button></div>
-    ${img(`../img/photos/${p.id}.jpg`, '')}<p id="photo-caption">${esc(p.caption)}</p>
+  box.innerHTML = `<div class="lb-in ${kind}">
+    <div class="lb-bar"><span id="photo-window-title">${esc(title)}</span><button type="button" aria-label="닫기">×</button></div>
+    ${img(src, '')}<p id="photo-caption">${esc(caption)}</p>
   </div>`;
   const close = () => { box.remove(); removeEventListener('keydown', onKey); prev && prev.focus && prev.focus(); };
   const onKey = e => { if (e.key === 'Escape') close(); };
@@ -198,7 +204,7 @@ const comments = id => {
 function file(id) {
   const c = chars.find(x => x.id === id), cp = copy[id] || {}, memo = mh.notes[id];
   view.innerHTML = `<button class="back">◀ 목록으로</button>
-  <div class="detail"><div class="idpic">${face(c)}</div><div>
+  <div class="detail"><button type="button" class="idpic" aria-label="${esc(c.name)} 증명사진 크게 보기">${face(c)}</button><div>
   <h3>${esc(c.name)}</h3>
   ${cp.tagline ? `<p class="status">"${esc(cp.tagline)}"</p>` : ''}
   ${cp.desc ? `<p class="desc">${esc(cp.desc)}</p>` : ''}
@@ -215,6 +221,7 @@ function file(id) {
   ${memo ? `<h3>${esc(ui.vault.memoLabel)}</h3><p class="desc">${esc(memo)}</p>` : ''}
   </div></div>
   ${comments(id)}`;
+  view.querySelector('.idpic').onclick = () => bigFace(c);
   view.querySelector('.back').onclick = () => { vault(); view.querySelector(`[data-id="${id}"]`).focus(); };
   toTop(); view.querySelector('.back').focus();
 }
