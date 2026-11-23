@@ -143,16 +143,17 @@ function guest(page = 0) {
   view.querySelectorAll('.pager button').forEach(b => b.onclick = () => { guest(+b.dataset.p); toTop(); view.querySelector('.pager button.on').focus(); });
 }
 
-// 잠금 화면: 힌트 없음
+// 잠금 화면: 3회 이상 틀리면 힌트
 function lock() {
   view.innerHTML = `<div class="pin"><p>${esc(ui.vault.lock)}</p>
   <form><input inputmode="numeric" maxlength="4" autocomplete="off" aria-label="비밀번호"> <button>확인</button></form>
   <p class="err" role="alert"></p></div>`;
   const f = view.querySelector('form');
+  let miss = 0;
   f.onsubmit = e => {
     e.preventDefault();
     if (f.querySelector('input').value === pin) { unlocked = true; vault(); }
-    else view.querySelector('.err').textContent = '비밀번호가 틀렸어요.';
+    else view.querySelector('.err').textContent = '비밀번호가 틀렸어요.' + (++miss >= 3 ? ' ' + ui.vault.hint : '');
   };
   f.querySelector('input').focus();
 }
