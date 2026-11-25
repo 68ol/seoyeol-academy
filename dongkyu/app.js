@@ -28,7 +28,7 @@ function widgets() {
   $('#mood').textContent = `TODAY IS.. ${ui.mood.emoji} ${ui.mood.text}`;
   $('#status').textContent = ui.status;
   $('#intro').textContent = ui.intro;
-  const yt = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(`${ui.bgm.title} ${ui.bgm.artist}`);
+  const yt = 'https://www.youtube.com/watch?v=kCFDaE8DdyE';
   $('#bgm-title').textContent = `${ui.bgm.title} - ${ui.bgm.artist}`;
   $('#bgm-title').href = $('#bgm-play').href = yt;
   $('#dday').textContent = `D-${ui.dday.days}`;
@@ -152,7 +152,7 @@ function lock() {
   let miss = 0;
   f.onsubmit = e => {
     e.preventDefault();
-    if (f.querySelector('input').value === pin) { unlocked = true; vault(); }
+    if (f.querySelector('input').value === pin) { unlocked = true; openVault(); }
     else view.querySelector('.err').textContent = '비밀번호가 틀렸어요.' + (++miss >= 3 ? ' ' + ui.vault.hint : '');
   };
   f.querySelector('input').focus();
@@ -160,6 +160,35 @@ function lock() {
 
 // 열린 업무함: 위 탭 3개(인물철·학교 생활철·서열 등사본). 마지막 자료철을 기억해 인물 상세에서 돌아온다
 let vtab = 'people', vdoc = null;
+const termRefs = {
+  사방: 'circles', 청룡회: 'circles', 백호회: 'circles', 주작회: 'circles', 현무회: 'circles',
+  양남매: 'circles', 암시장: 'circles', 세탁소: 'council', 학생회: 'council',
+  외출증: 'academic', 벌점: 'academic', 독사굴: 'dorm', 생활관: 'dorm',
+};
+function schoolLinks(text) {
+  const people = Object.fromEntries(chars.map(c => [c.name, c.id]));
+  const words = [...Object.keys(people), ...Object.keys(termRefs)].sort((a, b) => b.length - a.length);
+  return String(text ?? '').split(new RegExp('(' + words.join('|') + ')', 'g')).map((part, i) => {
+    if (i % 2 === 0) return esc(part);
+    const id = people[part];
+    const doc = termRefs[part];
+    if (!id && doc === vdoc) return `<strong>${esc(part)}</strong>`;
+    const target = id ? `person/${id}` : `school/${doc}`;
+    return `<a class="lk" href="#${target}">${esc(part)}</a>`;
+  }).join('');
+}
+function openVault() {
+  const [kind, id] = location.hash.slice(1).split('/');
+  if (kind === 'school' && vd.school.some(d => d.id === id)) {
+    vdoc = id;
+    vault('school');
+    view.querySelector('.doc-back').focus();
+  } else if (kind === 'person' && chars.some(c => c.id === id)) {
+    file(id);
+  } else {
+    vault();
+  }
+}
 const hp = d => `<a class="hp" href="${d.href}" target="_blank" rel="noopener">${esc(d.link)} ▸</a>`;
 const postit = s => s ? `<div class="postit">${esc(s)}</div>` : '';
 const vpages = {
@@ -169,8 +198,8 @@ const vpages = {
   school: () => {
     const d = vd.school.find(x => x.id === vdoc);
     if (!d) return `<ul class="doclist">${vd.school.map(x => `<li><button data-doc="${x.id}"><b>${esc(x.title)}</b><small>${esc(x.lead)}</small></button></li>`).join('')}</ul>`;
-    return `<button class="back doc-back">◀ ${esc(vd.tabs.school)}</button><div class="doc"><h4>${esc(d.title)}</h4><p class="lead">${esc(d.lead)}</p>
-    <dl>${d.items.map(i => `<dt>${esc(i.label)}</dt><dd>${esc(i.text)}</dd>`).join('')}</dl>${postit(d.memo)}${hp(d)}</div>`;
+    return `<button class="back doc-back">◀ ${esc(vd.tabs.school)}</button><div class="doc"><h4>${esc(d.title)}</h4><p class="lead">${schoolLinks(d.lead)}</p>
+    <dl>${d.items.map(i => `<dt>${esc(i.label)}</dt><dd>${schoolLinks(i.text)}</dd>`).join('')}</dl>${d.memo ? `<div class="postit"><em>${schoolLinks(d.memo)}</em></div>` : ''}${hp(d)}</div>`;
   },
   // 순위표는 characters.json 의 rank 로 만든다(비공개 인물 제외)
   rank: () => {
@@ -188,11 +217,11 @@ function vault(t = vtab) {
   vtab = t;
   view.innerHTML = `<h3>${esc(ui.vault.title)}</h3><div class="vtabs" role="tablist">${Object.keys(vpages).map(k =>
     `<button role="tab" aria-selected="${k === t}" class="${k === t ? 'on' : ''}" data-v="${k}">${esc(vd.tabs[k])}</button>`).join('')}</div>${vpages[t]()}`;
-  view.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { vdoc = null; vault(b.dataset.v); view.querySelector(`[data-v="${b.dataset.v}"]`).focus(); });
+  view.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { vdoc = null; if (isVaultLink()) history.replaceState(null, '', '#vault'); vault(b.dataset.v); view.querySelector(`[data-v="${b.dataset.v}"]`).focus(); });
   view.querySelectorAll('[data-id]').forEach(b => b.onclick = () => file(b.dataset.id));
   view.querySelectorAll('[data-doc]').forEach(b => b.onclick = () => { vdoc = b.dataset.doc; vault('school'); toTop(); view.querySelector('.doc-back').focus(); });
   const back = view.querySelector('.doc-back');
-  if (back) back.onclick = () => { const id = vdoc; vdoc = null; vault('school'); view.querySelector(`[data-doc="${id}"]`).focus(); };
+  if (back) back.onclick = () => { const id = vdoc; vdoc = null; if (location.hash.startsWith('#school/')) history.replaceState(null, '', '#vault'); vault('school'); view.querySelector(`[data-doc="${id}"]`).focus(); };
 }
 
 // 프로필 밑 덧글: 학생회와 친한 아이들이 남김, 대댓글 포함, 없는 인물은 섹션 생략
@@ -209,8 +238,8 @@ function file(id) {
   view.innerHTML = `<button class="back">◀ 목록으로</button>
   <div class="detail"><button type="button" class="idpic" aria-label="${esc(c.name)} 증명사진 크게 보기">${face(c)}</button><div>
   <h3>${esc(c.name)}</h3>
-  ${cp.tagline ? `<p class="status">"${esc(cp.tagline)}"</p>` : ''}
-  ${cp.desc ? `<p class="desc">${esc(cp.desc)}</p>` : ''}
+  ${cp.tagline ? `<p class="status">"<em>${esc(cp.tagline)}</em>"</p>` : ''}
+  ${cp.desc ? `<p class="desc">${schoolLinks(cp.desc)}</p>` : ''}
   <div class="chips">${c.traits.map(t => `<i>${esc(t)}</i>`).join('')}</div>
   <table>
   <tr><th>소속</th><td>${c.circle}${c.leader ? ' (반장)' : ''}</td></tr>
@@ -219,20 +248,26 @@ function file(id) {
   <tr><th>생일</th><td>${c.birthday ? esc(c.birthday) : '?'}${c.birthdayNote ? ` <small class="cn">${esc(c.birthdayNote)}</small>` : ''}</td></tr>
   <tr><th>별자리</th><td>${c.zodiac ? esc(c.zodiac) : '?'}</td></tr>
   <tr><th>혈액형</th><td>${c.bloodType}형</td></tr>
-  <tr><th>관계</th><td>${esc(c.relations)}</td></tr>
+  <tr><th>관계</th><td>${schoolLinks(c.relations)}</td></tr>
   </table>
   ${memo ? `<h3>${esc(ui.vault.memoLabel)}</h3><p class="desc">${esc(memo)}</p>` : ''}
   </div></div>
   ${comments(id)}`;
   view.querySelector('.idpic').onclick = () => bigFace(c);
-  view.querySelector('.back').onclick = () => { vault(); view.querySelector(`[data-id="${id}"]`).focus(); };
+  view.querySelector('.back').onclick = () => {
+    if (location.hash.startsWith('#person/')) {
+      history.replaceState(null, '', vtab === 'school' && vdoc ? `#school/${vdoc}` : '#vault');
+    }
+    vault();
+    (view.querySelector(`[data-id="${id}"], a[href="#person/${id}"]`) || view.querySelector('[data-v].on')).focus();
+  };
   toTop(); view.querySelector('.back').focus();
 }
 
 // 탭 이동: 탭 버튼, 홈 개수표, 선물함 링크가 모두 이 함수를 쓴다
 let stopRoom = null; // 홈의 미니룸 걷기 애니메이션을 멈추는 함수
 let ready = false; // 데이터가 오기 전에는 탭이 동작하지 않게 막음
-const tabs = { home, diary, photos, gifts, ilchon, guest: () => guest(0), vault };
+const tabs = { home, diary, photos, gifts, ilchon, guest: () => guest(0), vault: () => unlocked ? openVault() : lock() };
 function go(t) {
   if (!ready || !tabs[t]) return;
   document.querySelectorAll('#tabs button').forEach(x => { const on = x.dataset.t === t; x.classList.toggle('on', on); x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; });
@@ -249,7 +284,9 @@ $('#tabs').addEventListener('keydown', e => {
 });
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-t],[data-go]');
-  if (b) go(b.dataset.t || b.dataset.go);
+  if (!b) return;
+  if (isVaultLink()) history.replaceState(null, '', location.pathname + location.search);
+  go(b.dataset.t || b.dataset.go);
 });
 
 // 별 커서 효과 (마우스 환경 + 모션 허용일 때만)
@@ -266,6 +303,9 @@ if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion
   });
 }
 
+const isVaultLink = () => /^#(?:vault$|person\/|school\/)/.test(location.hash);
+addEventListener('hashchange', () => { if (isVaultLink()) go('vault'); });
+
 Promise.all(['characters', 'notes', 'copy', 'minihome', 'ui', 'vault', 'crop'].map(n => fetch(`../data/${n}.json`).then(r => r.json())))
-  .then(([c, n, cp, m, u, v, cr]) => { chars = c; pin = n.pin; copy = cp.chars; mh = m; ui = u; vd = v; crop = cr; ready = true; widgets(); home(); if (location.hash === '#vault') go('vault'); })
+  .then(([c, n, cp, m, u, v, cr]) => { chars = c; pin = n.pin; copy = cp.chars; mh = m; ui = u; vd = v; crop = cr; ready = true; widgets(); home(); if (isVaultLink()) go('vault'); })
   .catch(() => { view.innerHTML = '<p>데이터를 불러오지 못했어요. 파일을 직접 열지 말고 서버(또는 GitHub Pages)로 열어 주세요.</p>'; });
