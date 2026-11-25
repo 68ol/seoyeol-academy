@@ -31,6 +31,8 @@ h2{margin:0 0 4px;font-size:15px;color:var(--g);border-bottom:2px solid var(--g)
 .motto{font:bold 20px Batang,"바탕",serif;color:var(--n);text-align:center;padding:12px 0;letter-spacing:3px}
 .ph{display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:4/3;background:repeating-linear-gradient(45deg,#ece9d6,#ece9d6 6px,#f6f4e8 6px,#f6f4e8 12px);color:#6b6848;font-size:11px;border:1px solid var(--line)}
 .box img.pic{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--line)}
+#staff-g .pic,#staff-g .ph{aspect-ratio:13/19}
+#staff-g .pic{object-fit:contain;background:#eeece2}
 table.board{width:100%;border-collapse:collapse;font-size:12px}
 .board th{background:#e9e6d0;border-top:2px solid var(--g);border-bottom:1px solid var(--line);padding:5px 4px}
 .board td{border-bottom:1px dotted var(--line);padding:5px 4px;text-align:center}
@@ -111,12 +113,12 @@ Promise.all(['school', 'copy'].map(n => fetch(`data/${n}.json`).then(r => r.json
     if (nx && nx.classList.contains('open')) { nx.remove(); b.setAttribute('aria-expanded', 'false'); return; }
     const n = s.notices.find(x => x.no == b.dataset.no);
     const row = document.createElement('tr'); row.className = 'open';
-    row.innerHTML = `<td colspan="5"><p style="margin:0">${esc(n.body)}</p>${n.photo ? `<div class="attach">${pic(`img/notices/n${n.no}.png`, n.photo, '사진 첨부란')}<small>${esc(n.photo)}</small></div>` : ''}</td>`;
+    row.innerHTML = `<td colspan="5"><p style="margin:0">${esc(n.body)}</p>${n.photo ? `<div class="attach">${pic(`img/notices/n${n.no}.jpg`, n.photo, '사진 첨부란')}<small>${esc(n.photo)}</small></div>` : ''}</td>`;
     tr.after(row); b.setAttribute('aria-expanded', 'true');
   };
 
-  $('staff-g').innerHTML = s.staff.map(p => `<div class="card">${pic(`img/staff/${p.id}.png`, p.name, '사진 첨부란')}<b>${esc(p.name)}<em>${esc(p.role)}</em></b><p>${esc(p.desc)}</p></div>`).join('');
-  $('places-g').innerHTML = s.places.map(p => `<div class="card">${pic(`img/places/${p.id}.png`, p.name, '사진 첨부란')}<b>${esc(p.name)}</b><p>${esc(p.desc)}</p></div>`).join('');
+  $('staff-g').innerHTML = s.staff.map(p => `<div class="card">${pic(`img/staff/${p.id}.jpg`, p.name, '사진 첨부란')}<b>${esc(p.name)}<em>${esc(p.role)}</em></b><p>${esc(p.desc)}</p></div>`).join('');
+  $('places-g').innerHTML = s.places.map(p => `<div class="card">${pic(`img/places/${p.id}.jpg`, p.name, '사진 첨부란')}<b>${esc(p.name)}</b><p>${esc(p.desc)}</p></div>`).join('');
 
   const sc = c.school;
   $('sched').innerHTML = sc.schedule.slice(2).concat(sc.schedule.slice(0, 2)).map(m =>
